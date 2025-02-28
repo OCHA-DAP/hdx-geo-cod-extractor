@@ -1,0 +1,6 @@
+services:
+  hdx-geo-cod-extractor:
+    build: .
+    env_file: .env
+    volumes:
+      - ./app:/usr/src/app/app
