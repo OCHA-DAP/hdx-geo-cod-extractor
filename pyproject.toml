@@ -3,27 +3,23 @@ name = "hdx-geo-cod-extractor"
 version = "0.1.0"
 description = "Extracts COD-AB from OCHA FIS ArcGIS server"
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = ["geopandas", "httpx", "python-dotenv"]
+requires-python = ">=3.13"
+dependencies = [
+    "geopandas",
+    "httpx[http2]",
+    "langcodes",
+    "pyarrow",
+    "pycountry",
+    "pyicu",
+    "python-dotenv",
+    "tenacity",
+    "xlsxwriter",
+]
 
 [dependency-groups]
-dev = ["pyarrow", "ruff", "taskipy"]
+dev = ["ruff", "taskipy"]
 
 [tool.taskipy.tasks]
 app = "python -m app"
 export = "uv sync -q && uv export -q -o requirements.txt --no-dev --no-hashes"
 ruff = "ruff format && ruff check && ruff format"
-
-[tool.ruff]
-fix = true
-target-version = "py312"
-
-[tool.ruff.format]
-docstring-code-format = true
-
-[tool.ruff.lint]
-select = ["ALL"]
-ignore = ["D100", "D104", "INP", "S603", "S607"]
-
-[tool.ruff.lint.pydocstyle]
-convention = "google"

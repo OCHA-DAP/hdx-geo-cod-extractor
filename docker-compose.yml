@@ -4,3 +4,4 @@ services:
     env_file: .env
     volumes:
       - ./app:/usr/src/app/app
+      - ./data:/usr/src/app/data
