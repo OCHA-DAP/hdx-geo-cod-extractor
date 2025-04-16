@@ -48,8 +48,10 @@ lines_dir = cwd / "../data/lines"
 lines_dir.mkdir(exist_ok=True, parents=True)
 polygons_dir = cwd / "../data/polygons"
 polygons_dir.mkdir(exist_ok=True, parents=True)
-table_dir = cwd / "../data/tables"
-table_dir.mkdir(exist_ok=True, parents=True)
+checks_dir = cwd / "../data/checks"
+checks_dir.mkdir(exist_ok=True, parents=True)
+scores_dir = cwd / "../data/scores"
+scores_dir.mkdir(exist_ok=True, parents=True)
 
 misc_columns = [
     "area_sqkm",

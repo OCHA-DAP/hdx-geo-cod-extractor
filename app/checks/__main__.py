@@ -1,8 +1,7 @@
 from geopandas import read_parquet
 from pandas import DataFrame
-from pycountry import countries
 
-from app.config import ADMIN_LEVELS, polygons_dir, table_dir
+from app.config import ADMIN_LEVELS, checks_dir, polygons_dir
 
 from . import (
     attribute_match,
@@ -18,7 +17,7 @@ from . import (
 )
 
 
-def create_output(checks: list) -> None:
+def create_output(iso3: str, checks: list) -> None:
     """Create CSV from registered checks.
 
     Args:
@@ -33,11 +32,11 @@ def create_output(checks: list) -> None:
         else:
             output = output.merge(partial, on=["iso3", "level"], how="outer")
     if output is not None:
-        dest = table_dir / "checks.csv"
+        dest = checks_dir / f"{iso3.lower()}.csv"
         output.to_csv(dest, encoding="utf-8-sig", index=False)
 
 
-def main() -> None:
+def main(iso3: str) -> None:
     """Summarizes and describes the data contained within downloaded boundaries.
 
     1. Create an iterable with each item containing the following (check_function,
@@ -69,19 +68,13 @@ def main() -> None:
         (languages, []),
         (table_other, []),
     ]
-    for country in countries:
-        iso3 = country.alpha_3
-        gdfs = []
-        for level in range(ADMIN_LEVELS + 1):
-            file = polygons_dir / f"{iso3.lower()}_adm{level}.parquet"
-            if file.exists():
-                gdf = read_parquet(file)
-                gdfs.append(gdf)
-        for function, results in checks:
-            result = function.main(iso3, gdfs)
-            results.append(result)
-    create_output(checks)
-
-
-if __name__ == "__main__":
-    main()
+    gdfs = []
+    for level in range(ADMIN_LEVELS + 1):
+        file = polygons_dir / f"{iso3.lower()}_adm{level}.parquet"
+        if file.exists():
+            gdf = read_parquet(file)
+            gdfs.append(gdf)
+    for function, results in checks:
+        result = function.main(iso3, gdfs)
+        results.append(result)
+    create_output(iso3, checks)

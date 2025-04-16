@@ -5,6 +5,7 @@ description = "Extracts COD-AB from OCHA FIS ArcGIS server"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "defusedxml",
     "geopandas",
     "httpx[http2]",
     "langcodes",
@@ -13,7 +14,6 @@ dependencies = [
     "pyicu",
     "python-dotenv",
     "tenacity",
-    "xlsxwriter",
 ]
 
 [dependency-groups]

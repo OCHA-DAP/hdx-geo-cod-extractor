@@ -1,6 +1,6 @@
 from logging import getLogger
 
-from app.config import table_dir
+from app.config import checks_dir
 from app.utils import read_csv
 
 from . import (
@@ -19,7 +19,7 @@ from . import (
 logger = getLogger(__name__)
 
 
-def main() -> None:
+def main(iso3: str) -> float:
     """Applies scoring to the summarized values in "checks.csv".
 
     1. Create an iterable with each item containing the scoring function.
@@ -31,8 +31,6 @@ def main() -> None:
 
     4. Output the final result to Excel: "data/tables/cod_ab_data_quality.xlsx".
     """
-    logger.info("Starting")
-
     # NOTE: Register scores here.
     score_functions = (
         geometry_validity,
@@ -46,7 +44,7 @@ def main() -> None:
         table_other,
     )
 
-    checks = read_csv(table_dir / "checks.csv")
+    checks = read_csv(checks_dir / f"{iso3}.csv")
     score_results = []
     for function in score_functions:
         partial = function.main(checks)
@@ -62,9 +60,6 @@ def main() -> None:
                 how="outer",
             )
     if output_table is not None:
-        output.main(output_table)
-    logger.info("Finished")
-
-
-if __name__ == "__main__":
-    main()
+        output.main(iso3, output_table)
+        return output_table.mean(axis=None, numeric_only=True)
+    return 0.0

@@ -1,7 +1,8 @@
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 import pandas as pd
+from defusedxml.ElementTree import fromstring
 from geopandas import GeoDataFrame
 from httpx import Client, Response
 from pandas import DataFrame, to_datetime
@@ -14,6 +15,7 @@ from .config import (
     ATTEMPT,
     TIMEOUT,
     WAIT,
+    services_url,
 )
 
 
@@ -65,6 +67,39 @@ def generate_token() -> str:
     with Client(http2=True) as client:
         r = client.post(url, data=data).json()
         return r["token"]
+
+
+def get_iso3_list() -> list[str]:
+    """Gets a list of ISO3 codes available on the FIS ArcGIS server."""
+    params = {"f": "json", "token": generate_token()}
+    services = client_get(services_url, params=params).json()["services"]
+    return [x["name"][4:7] for x in services if x["type"] == "FeatureServer"]
+
+
+def get_hdx_metadata(iso3: str) -> dict[str, Any]:
+    """Get HDX metadata associated with a COD on HDX."""
+    url = "https://data.humdata.org/api/3/action/package_show"
+    params = {"id": f"cod-ab-{iso3.lower()}"}
+    return client_get(url, TIMEOUT, params).json().get("result")
+
+
+def get_hdx_update(iso3: str) -> str:
+    """Get the date an HDX dataset was last updated."""
+    return get_hdx_metadata(iso3)["last_modified"][:10]
+
+
+def get_arcgis_update(iso3: str) -> str:
+    """Get the date an ArcGIS Server service was last updated."""
+    text = client_get(
+        f"{services_url}/{iso3}_COD/FeatureServer/info/metadata",
+        TIMEOUT,
+        {"token": generate_token()},
+    ).text
+    root = fromstring(text)
+    date = root.findtext("Esri/CreaDate")
+    if date:
+        return f"{date[:4]}-{date[4:6]}-{date[6:8]}"
+    return ""
 
 
 def is_empty(string: str) -> bool:
