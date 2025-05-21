@@ -9,9 +9,7 @@ from os.path import dirname, expanduser, join
 
 from hdx.data.user import User
 from hdx.facades.infer_arguments import facade
-from hdx.utilities.path import (
-    wheretostart_tempdir_batch,
-)
+from hdx.utilities.path import wheretostart_tempdir_batch
 
 from hdx.scraper.cod_ab.cod_ab import CodAb
 

@@ -70,7 +70,7 @@ To check if your changes pass pre-commit without committing, run:
 To run the tests and view coverage, execute:
 
 ```shell
-    pytest -c --cov hdx
+    pytest --cov hdx
 ```
 
 ## Packages
@@ -88,7 +88,7 @@ Any changes to the dependencies will be automatically reflected in
 re-generate the files without committing by executing:
 
 ```shell
-    pre-commit run pip-compile --all-files
+    pre-commit run --all-files
 ```
 
 ## Project
