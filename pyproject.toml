@@ -1,12 +1,16 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
 [project]
-name = "hdx-geo-cod-extractor"
-version = "0.1.0"
-description = "Extracts COD-AB from OCHA FIS ArcGIS server"
-readme = "README.md"
+name = "hdx-scraper-cod-ab"
 requires-python = ">=3.13"
+dynamic = ["version"]
 dependencies = [
     "defusedxml",
     "geopandas",
+    "hdx-python-api",
+    "hdx-python-utilities",
     "httpx[http2]",
     "langcodes",
     "pyarrow",
@@ -14,12 +18,18 @@ dependencies = [
     "pyicu",
     "python-dotenv",
     "tenacity",
+    "tqdm",
 ]
 
+[project.optional-dependencies]
+dev = ["pre-commit", "pytest-cov", "pytest", "ruff", "taskipy"]
+
 [dependency-groups]
-dev = ["ruff", "taskipy"]
+dev = ["pre-commit", "pytest-cov", "pytest", "ruff", "taskipy"]
 
 [tool.taskipy.tasks]
-app = "python -m app"
+# uv run task app
+app = "python -m hdx.scraper.cod_ab"
 export = "uv sync -q && uv export -q -o requirements.txt --no-dev --no-hashes"
+export_test = "uv sync -q && uv export -q -o requirements-test.txt --no-hashes"
 ruff = "ruff format && ruff check && ruff format"

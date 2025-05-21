@@ -1,0 +1,7 @@
+services:
+  hdx-scraper-cod-ab:
+    build: .
+    env_file: .env
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./data:/usr/src/app/data

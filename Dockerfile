@@ -17,6 +17,6 @@ RUN apk add --no-cache \
     apk del .build-deps && \
     rm -rf /root/.cache
 
-COPY app ./app
+COPY src ./src
 
-CMD ["python", "-m", "app"]
+CMD ["python", "-m", "hdx.scraper.cod_ab"]
