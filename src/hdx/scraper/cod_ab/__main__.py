@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 from hdx.scraper.cod_ab import checks, download, formats, metadata, scores
 from hdx.scraper.cod_ab.cod_ab import CodAb
-from hdx.scraper.cod_ab.config import data_dir
+from hdx.scraper.cod_ab.config import DEBUG, data_dir
 from hdx.scraper.cod_ab.utils import (
     get_arcgis_update,
     get_hdx_update,
@@ -27,7 +27,6 @@ logger = logging.getLogger(__name__)
 _USER_AGENT_LOOKUP = "hdx-scraper-cod-ab"
 _UPDATED_BY_SCRIPT = "HDX Scraper: COD-AB"
 PASS = 1.0
-DEBUG = True
 
 
 def main() -> None:
@@ -48,12 +47,17 @@ def main() -> None:
             if arcgis_update >= hdx_update:
                 iso3_dir.mkdir(exist_ok=True, parents=True)
                 meta_dict = metadata.main(iso3)
-                if not iso3_dir.exists():
+                if DEBUG and not iso3_dir.exists():
                     download.main(iso3)
                     formats.main(iso3)
                     checks.main(iso3)
                 score = scores.main(iso3)
-                if meta_dict and score == PASS:
+                if (
+                    score == PASS
+                    and meta_dict
+                    and meta_dict.get("all", {}).get("date_established")
+                    and meta_dict.get("all", {}).get("date_reviewed")
+                ):
                     cod_ab = CodAb()
                     dataset = cod_ab.generate_dataset(meta_dict, iso3)
                     dataset.update_from_yaml(

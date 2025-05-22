@@ -56,8 +56,10 @@ class CodAb:
                 {
                     "name": f"{iso3} {format_type}",
                     "description": f"{iso3} {format_type}",
-                    "url": data_dir / iso3.lower() / f"{iso3.lower()}_cod_ab.{ext}",
                 }
+            )
+            resource.set_file_to_upload(
+                data_dir / iso3.lower() / f"{iso3.lower()}_cod_ab.{ext}"
             )
             resource.set_format(format_type)
             resource.set_date_data_updated(dataset_time_end)

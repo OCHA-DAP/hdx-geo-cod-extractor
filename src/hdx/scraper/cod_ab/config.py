@@ -22,6 +22,8 @@ ARCGIS_SERVER = getenv("ARCGIS_SERVER", "")
 ARCGIS_USERNAME = getenv("ARCGIS_USERNAME", "")
 ARCGIS_PASSWORD = getenv("ARCGIS_PASSWORD", "")
 
+DEBUG = getenv("DEBUG", "").lower() in ("true", "1", "yes", "on")
+
 ATTEMPT = int(getenv("ATTEMPT", "5"))
 WAIT = int(getenv("WAIT", "10"))
 TIMEOUT = int(getenv("TIMEOUT", "60"))
