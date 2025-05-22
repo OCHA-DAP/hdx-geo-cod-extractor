@@ -1,8 +1,5 @@
 from logging import getLogger
 
-from app.config import data_dir
-from app.utils import read_csv
-
 from . import (
     geometry_topology,
     geometry_validity,
@@ -13,6 +10,8 @@ from . import (
     table_names,
     table_pcodes,
 )
+from hdx.scraper.cod_ab.config import data_dir
+from hdx.scraper.cod_ab.utils import read_csv
 
 logger = getLogger(__name__)
 

@@ -1,5 +1,6 @@
-from app.config import data_dir
 from pandas import DataFrame
+
+from hdx.scraper.cod_ab.config import data_dir
 
 
 def aggregate(checks: DataFrame) -> DataFrame:

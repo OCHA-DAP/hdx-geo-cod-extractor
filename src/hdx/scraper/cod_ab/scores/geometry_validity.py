@@ -1,5 +1,6 @@
-from app.config import EPSG_WGS84
 from pandas import DataFrame
+
+from hdx.scraper.cod_ab.config import EPSG_WGS84
 
 
 def main(checks: DataFrame) -> DataFrame:

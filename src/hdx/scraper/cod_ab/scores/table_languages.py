@@ -1,5 +1,6 @@
-from app.config import romanized_languages
 from pandas import DataFrame
+
+from hdx.scraper.cod_ab.config import romanized_languages
 
 
 def main(checks: DataFrame) -> DataFrame:

@@ -2,7 +2,7 @@ from pathlib import Path
 from shutil import rmtree
 from subprocess import run
 
-from app.config import data_dir
+from hdx.scraper.cod_ab.config import data_dir
 
 
 def to_multilayer(src_dataset: Path, dst_dataset: Path, *, multi: bool) -> None:

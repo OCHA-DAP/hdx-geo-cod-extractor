@@ -44,7 +44,7 @@ VALID_TO = "valid_to"
 services_url = f"{ARCGIS_SERVER}/server/rest/services/Hosted"
 
 cwd = Path(__file__).parent
-data_dir = cwd / "../data"
+data_dir = cwd / "../../../../data"
 data_dir.mkdir(exist_ok=True, parents=True)
 
 checks_config = {

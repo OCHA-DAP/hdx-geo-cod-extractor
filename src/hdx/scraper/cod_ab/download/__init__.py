@@ -1,6 +1,5 @@
-from app.config import data_dir, services_url
-
 from . import metadata, ogr2ogr, points, postprocess
+from hdx.scraper.cod_ab.config import data_dir, services_url
 
 
 def download_polygons(iso3: str) -> None:

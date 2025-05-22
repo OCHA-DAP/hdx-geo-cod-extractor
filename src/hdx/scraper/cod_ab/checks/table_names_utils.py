@@ -1,9 +1,9 @@
-from app.config import LANGUAGE_COUNT, m49, official_languages
 from geopandas import GeoDataFrame
 from icu import USET_ADD_CASE_MAPPINGS, LocaleData, ULocaleDataExemplarSetType
 from langcodes import tag_is_valid
 
 from .table_names_config import auxiliary_codes, exclude_check, punctuation_set
+from hdx.scraper.cod_ab.config import LANGUAGE_COUNT, m49, official_languages
 
 
 def get_languages(gdf: GeoDataFrame) -> list[str]:

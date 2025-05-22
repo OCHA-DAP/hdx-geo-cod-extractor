@@ -1,4 +1,3 @@
-from app.utils import is_empty
 from geopandas import GeoDataFrame
 
 from .table_names_utils import (
@@ -13,6 +12,7 @@ from .table_names_utils import (
     is_punctuation,
     is_upper,
 )
+from hdx.scraper.cod_ab.utils import is_empty
 
 
 def main(iso3: str, gdfs: list[GeoDataFrame]) -> list[dict]:

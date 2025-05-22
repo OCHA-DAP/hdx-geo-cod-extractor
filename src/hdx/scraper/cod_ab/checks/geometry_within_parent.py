@@ -1,5 +1,6 @@
-from app.utils import get_name_columns, get_pcode_columns
 from geopandas import GeoDataFrame
+
+from hdx.scraper.cod_ab.utils import get_name_columns, get_pcode_columns
 
 
 def check_nesting(

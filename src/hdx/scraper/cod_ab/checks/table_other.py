@@ -1,8 +1,9 @@
 from re import match
 
-from app.config import misc_columns
-from app.utils import get_name_columns, get_pcode_columns
 from geopandas import GeoDataFrame
+
+from hdx.scraper.cod_ab.config import misc_columns
+from hdx.scraper.cod_ab.utils import get_name_columns, get_pcode_columns
 
 
 def main(iso3: str, gdfs: list[GeoDataFrame]) -> list[dict]:

@@ -3,8 +3,9 @@ from re import sub
 from typing import Any
 
 import numpy as np
-from app.metadata import config
 from pandas import read_csv
+
+from hdx.scraper.cod_ab.metadata import config
 
 
 def get_meta(iso3: str = "") -> list[dict]:

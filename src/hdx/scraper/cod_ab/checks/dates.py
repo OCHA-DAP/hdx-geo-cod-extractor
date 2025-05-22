@@ -1,5 +1,6 @@
-from app.config import VALID_ON, VALID_TO
 from geopandas import GeoDataFrame
+
+from hdx.scraper.cod_ab.config import VALID_ON, VALID_TO
 
 
 def main(iso3: str, gdfs: list[GeoDataFrame]) -> list[dict]:

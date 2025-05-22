@@ -1,6 +1,7 @@
-from app.utils import get_pcode_columns, is_empty
 from geopandas import GeoDataFrame
 from pycountry import countries
+
+from hdx.scraper.cod_ab.utils import get_pcode_columns, is_empty
 
 
 def main(iso3: str, gdfs: list[GeoDataFrame]) -> list[dict]:

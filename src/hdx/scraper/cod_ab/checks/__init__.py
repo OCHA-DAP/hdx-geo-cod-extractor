@@ -1,4 +1,3 @@
-from app.config import ADMIN_LEVELS, checks_config, data_dir
 from geopandas import read_parquet
 from pandas import DataFrame
 
@@ -14,6 +13,7 @@ from . import (
     table_other,
     table_pcodes,
 )
+from hdx.scraper.cod_ab.config import ADMIN_LEVELS, checks_config, data_dir
 
 
 def create_output(iso3: str, checks: list) -> None:

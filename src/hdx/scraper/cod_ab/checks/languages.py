@@ -1,6 +1,7 @@
-from app.config import LANGUAGE_COUNT
 from geopandas import GeoDataFrame
 from langcodes import tag_is_valid
+
+from hdx.scraper.cod_ab.config import LANGUAGE_COUNT
 
 
 def main(iso3: str, gdfs: list[GeoDataFrame]) -> list[dict]:

@@ -1,12 +1,13 @@
-from app.config import (
+from geopandas import GeoDataFrame
+
+from hdx.scraper.cod_ab.config import (
     EPSG_WGS84,
     GEOJSON_PRECISION,
     METERS_PER_KM,
     POLYGON,
     VALID_GEOMETRY,
 )
-from app.utils import get_epsg_ease
-from geopandas import GeoDataFrame
+from hdx.scraper.cod_ab.utils import get_epsg_ease
 
 
 def main(iso3: str, gdfs: list[GeoDataFrame]) -> list[dict]:

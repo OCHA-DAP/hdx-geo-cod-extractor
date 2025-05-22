@@ -1,8 +1,9 @@
 from math import pi
 
-from app.config import EPSG_EQUAL_AREA, METERS_PER_KM
 from geopandas import GeoDataFrame, GeoSeries
 from shapely import Polygon
+
+from hdx.scraper.cod_ab.config import EPSG_EQUAL_AREA, METERS_PER_KM
 
 
 def main(iso3: str, gdfs: list[GeoDataFrame]) -> list[dict]:

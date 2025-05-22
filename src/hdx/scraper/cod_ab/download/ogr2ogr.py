@@ -4,9 +4,10 @@ from pathlib import Path
 from subprocess import DEVNULL, CompletedProcess, run
 from urllib.parse import urlencode
 
-from app.config import ATTEMPT, WAIT
-from app.utils import generate_token
 from tenacity import retry, stop_after_attempt, wait_fixed
+
+from hdx.scraper.cod_ab.config import ATTEMPT, WAIT
+from hdx.scraper.cod_ab.utils import generate_token
 
 logger = getLogger(__name__)
 

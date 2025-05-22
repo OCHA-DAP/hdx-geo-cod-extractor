@@ -1,5 +1,6 @@
-from app.config import SLIVER_GAP_AREA_KM, SLIVER_GAP_THINNESS
 from pandas import DataFrame
+
+from hdx.scraper.cod_ab.config import SLIVER_GAP_AREA_KM, SLIVER_GAP_THINNESS
 
 
 def main(checks: DataFrame) -> DataFrame:

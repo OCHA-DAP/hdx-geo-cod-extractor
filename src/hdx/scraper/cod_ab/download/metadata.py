@@ -1,7 +1,7 @@
 import re
 
-from app.config import services_url
-from app.utils import client_get, generate_token
+from hdx.scraper.cod_ab.config import services_url
+from hdx.scraper.cod_ab.utils import client_get, generate_token
 
 p1 = re.compile(r"[a-z]{3}_admin\d$")
 p2 = re.compile(r"[a-z]{3}_adminlines$")
