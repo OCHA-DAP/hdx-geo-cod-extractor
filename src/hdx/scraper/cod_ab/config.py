@@ -3,7 +3,6 @@ from os import environ, getenv
 from pathlib import Path
 
 from dotenv import load_dotenv
-from pandas import read_csv
 
 load_dotenv(override=True)
 
@@ -74,5 +73,3 @@ misc_columns = [
 
 official_languages = ["ar", "en", "es", "fr", "ru", "zh"]
 romanized_languages = ["en", "es", "fr", "hu", "id", "nl", "pl", "pt", "ro", "sk"]
-
-m49 = {x["iso3"]: x for x in read_csv(cwd / "m49.csv").to_dict("records")}
