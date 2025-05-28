@@ -2,8 +2,8 @@
 name: Run script
 on:
   workflow_dispatch: # add run button in github
-  schedule:
-    - cron: "32 10 * * *"
+#  schedule:
+#    - cron: "32 10 * * *"
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -26,7 +26,7 @@ jobs:
           USER_AGENT: ${{ vars.USER_AGENT }}
           EXTRA_PARAMS: ${{ vars.EXTRA_PARAMS }}
         run: |
-          python -m hdx.scraper.{{cookiecutter.scraper_name}}
+          python -m hdx.scraper.cod_ab
       - name: Send mail
         if: failure()
         uses: dawidd6/action-send-mail@v3
