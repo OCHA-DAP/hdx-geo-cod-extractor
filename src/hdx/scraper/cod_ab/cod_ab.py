@@ -2,67 +2,78 @@
 """cod_ab scraper."""
 
 import logging
+from os.path import join
 
 from hdx.data.dataset import Dataset
-from hdx.data.hdxobject import HDXError
+from hdx.data.organization import Organization
 from hdx.data.resource import Resource
+from hdx.location.country import Country
 
 from hdx.scraper.cod_ab.config import data_dir
 
 logger = logging.getLogger(__name__)
 
 
-class CodAb:
-    def generate_dataset(self, metadata: dict, iso3: str) -> Dataset | None:
-        # To be generated
-        dataset_name = f"{iso3.lower()}-cod-ab-2"
-        dataset_title = f"{iso3} - Subnational Administrative Boundaries"
-        dataset_description = (
-            f"{iso3} - Subnational Administrative Boundaries from FIS server"
-        )
-        dataset_time_start = metadata["all"]["date_established"]
-        dataset_time_end = metadata["all"]["date_reviewed"]
-        dataset_tags = ["administrative boundaries-divisions"]
-        dataset_country_iso3 = iso3
+def generate_dataset(metadata: dict, iso3: str) -> Dataset | None:
+    country_name = Country.get_country_name_from_iso3(iso3)
+    if not country_name:
+        logger.error(f"Country not found for {iso3}")
+        return None
+    dataset_name = f"{iso3.lower()}-cod-ab"
+    dataset_title = f"{country_name} - Subnational Administrative Boundaries"
+    dataset = Dataset(
+        {
+            "name": dataset_name,
+            "title": dataset_title,
+        },
+    )
 
-        # Dataset info
-        dataset = Dataset(
+    dataset_time_start = metadata["all"]["date_established"]
+    dataset_time_end = metadata["all"]["date_reviewed"]
+    dataset.set_time_period(dataset_time_start, dataset_time_end)
+
+    dataset_tags = ["administrative boundaries-divisions", "gazetteer"]
+    dataset.add_tags(dataset_tags)
+
+    dataset.add_country_location(iso3)
+
+    orig_org = metadata["contributor"]
+    org = Organization.autocomplete(orig_org)
+    if len(org) != 1:
+        logger.error(f"Matching organization not found for {orig_org}")
+        return None
+    dataset.set_organization(org[0])
+
+    dataset["source"] = metadata["source"]
+    dataset["caveats"] = ""  # TODO: fill in caveats (are these static or dynamic?)
+    dataset["notes"] = compile_notes(metadata)
+
+    # Add resources
+    for ext, format_type in [
+        ("gdb.zip", "Geodatabase"),
+        ("shp.zip", "Shapefile"),
+        ("geojson.zip", "GeoJSON"),
+        ("xlsx", "XLSX"),
+    ]:
+        resource = Resource(
             {
-                "name": dataset_name,
-                "title": dataset_title,
-                "description": dataset_description,
-                "notes": "",
-            },
+                "name": f"{iso3} {format_type}",
+                "description": f"{iso3} {format_type}",
+            }
         )
+        resource.set_file_to_upload(
+            join(data_dir, iso3.lower(), f"{iso3.lower()}_cod_ab.{ext}")
+        )
+        resource.set_format(format_type)
+        dataset.add_update_resource(resource)
+        if format_type == "Shapefile":
+            resource.enable_dataset_preview()
 
-        dataset.set_time_period(dataset_time_start, dataset_time_end)
-        dataset.add_tags(dataset_tags)
-        # Only if needed
-        dataset.set_subnational(True)
-        try:
-            dataset.add_country_location(dataset_country_iso3)
-        except HDXError:
-            logger.error(f"Couldn't find country {dataset_country_iso3}, skipping")
-            return None
+    dataset.preview_resource()
 
-        # Add resources here
-        for ext, format_type in [
-            ("gdb.zip", "Geodatabase"),
-            ("shp.zip", "zipped shapefile"),
-            ("geojson.zip", "GeoJSON"),
-            ("xlsx", "XLSX"),
-        ]:
-            resource = Resource(
-                {
-                    "name": f"{iso3} {format_type}",
-                    "description": f"{iso3} {format_type}",
-                }
-            )
-            resource.set_file_to_upload(
-                data_dir / iso3.lower() / f"{iso3.lower()}_cod_ab.{ext}"
-            )
-            resource.set_format(format_type)
-            resource.set_date_data_updated(dataset_time_end)
-            dataset.add_update_resource(resource)
+    return dataset
 
-        return dataset
+
+# TODO: write function to compile notes from COD metadata
+def compile_notes(metadata: dict) -> str:
+    return ""

@@ -14,7 +14,7 @@ from hdx.utilities.path import wheretostart_tempdir_batch
 from tqdm import tqdm
 
 from hdx.scraper.cod_ab import checks, download, formats, metadata, scores
-from hdx.scraper.cod_ab.cod_ab import CodAb
+from hdx.scraper.cod_ab.cod_ab import generate_dataset
 from hdx.scraper.cod_ab.config import DEBUG, data_dir
 from hdx.scraper.cod_ab.utils import (
     get_arcgis_update,
@@ -33,7 +33,7 @@ def main() -> None:
     """Generate datasets and create them in HDX."""
     if not User.check_current_user_organization_access("ocha-fiss", "create_dataset"):
         raise PermissionError(
-            "API Token does not give access to <insert org title> organisation!",
+            "API Token does not give access to OCHA FISS organisation!",
         )
 
     with wheretostart_tempdir_batch(folder=_USER_AGENT_LOOKUP) as info:
@@ -58,8 +58,9 @@ def main() -> None:
                     and meta_dict.get("all", {}).get("date_established")
                     and meta_dict.get("all", {}).get("date_reviewed")
                 ):
-                    cod_ab = CodAb()
-                    dataset = cod_ab.generate_dataset(meta_dict, iso3)
+                    dataset = generate_dataset(meta_dict, iso3)
+                    if not dataset:
+                        continue
                     dataset.update_from_yaml(
                         path=join(
                             dirname(__file__), "config", "hdx_dataset_static.yaml"
@@ -86,8 +87,6 @@ if __name__ == "__main__":
         user_agent_config_yaml=join(expanduser("~"), ".useragents.yaml"),
         user_agent_lookup=_USER_AGENT_LOOKUP,
         project_config_yaml=join(
-            dirname(__file__),
-            "config",
-            "project_configuration.yaml",
+            dirname(__file__), "config", "project_configuration.yaml"
         ),
     )
