@@ -26,7 +26,7 @@ def main(iso3: str) -> float:
     3. After all the scoring has been performed, join the DataFrames together by ISO3
     and admin level.
 
-    4. Output the final result to Excel: "data/tables/cod_ab_data_quality.xlsx".
+    4. Output the final result to Excel: "saved_data/tables/cod_ab_data_quality.xlsx".
     """
     # NOTE: Register scores here.
     score_functions = (
