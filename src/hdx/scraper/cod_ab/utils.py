@@ -1,10 +1,11 @@
 import re
 from pathlib import Path
-from typing import Any, Literal
+from typing import Literal
 
 import pandas as pd
 from defusedxml.ElementTree import fromstring
 from geopandas import GeoDataFrame
+from hdx.data.dataset import Dataset
 from httpx import Client, Response
 from pandas import DataFrame, to_datetime
 from tenacity import retry, stop_after_attempt, wait_fixed
@@ -82,16 +83,10 @@ def get_iso3_list() -> list[str]:
     ]
 
 
-def get_hdx_metadata(iso3: str) -> dict[str, Any]:
-    """Get HDX metadata associated with a COD on HDX."""
-    url = "https://data.humdata.org/api/3/action/package_show"
-    params = {"id": f"cod-ab-{iso3.lower()}"}
-    return client_get(url, TIMEOUT, params).json().get("result")
-
-
 def get_hdx_update(iso3: str) -> str:
     """Get the date an HDX dataset was last updated."""
-    return get_hdx_metadata(iso3)["last_modified"][:10]
+    dataset = Dataset.read_from_hdx(f"cod-ab-{iso3.lower()}")
+    return dataset["last_modified"][:10]
 
 
 def get_arcgis_update(iso3: str) -> str:
