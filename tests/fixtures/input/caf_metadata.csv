@@ -1,0 +1,17 @@
+﻿iso3,lvl,key,value
+CAF,-1,cod_ab_quality_checked,True
+CAF,-1,cod_ab_requires_improvement,False
+CAF,-1,cod_em_available,True
+CAF,-1,cod_ps_available,True
+CAF,-1,contributor,OCHA Central African Republic
+CAF,-1,date_established,2020-12-01
+CAF,-1,date_reviewed,2024-03-01
+CAF,-1,level_deepest,4
+CAF,-1,level_ideal,2
+CAF,-1,ocha_country_presence,Country Office
+CAF,-1,ocha_region,ROWCA
+CAF,-1,source,Agency for Technical Cooperation and Development(ACTED)
+CAF,1,feature_type,Prefecture
+CAF,2,feature_type,Sub-prefecture
+CAF,3,feature_type,Commune
+CAF,4,feature_type,Locality
