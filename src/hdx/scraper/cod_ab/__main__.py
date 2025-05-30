@@ -61,13 +61,13 @@ def main(save: bool = True) -> None:
             arcgis_update = get_arcgis_update(iso3)
             hdx_update = get_hdx_update(iso3)
             if arcgis_update >= hdx_update:
-                iso3_dir.mkdir(exist_ok=True, parents=True)
-                meta_dict = metadata.main(iso3, data_dir)
-                if DEBUG and not iso3_dir.exists():
+                if not DEBUG or (DEBUG and not iso3_dir.exists()):
+                    iso3_dir.mkdir(exist_ok=True, parents=True)
                     download.main(iso3, data_dir)
                     formats.main(iso3, data_dir)
                     checks.main(iso3, data_dir)
                 score = scores.main(iso3, data_dir)
+                meta_dict = metadata.main(iso3, data_dir)
                 if (
                     score == PASS
                     and meta_dict
