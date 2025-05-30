@@ -10,6 +10,7 @@ from shutil import rmtree
 
 from hdx.data.user import User
 from hdx.facades.infer_arguments import facade
+from hdx.utilities.dateparse import now_utc
 from hdx.utilities.path import wheretostart_tempdir_batch
 from tqdm import tqdm
 
@@ -35,7 +36,7 @@ def main() -> None:
         raise PermissionError(
             "API Token does not give access to OCHA FISS organisation!",
         )
-
+    today = now_utc()
     with wheretostart_tempdir_batch(folder=_USER_AGENT_LOOKUP) as info:
         iso3_list = get_iso3_list()
         pbar = tqdm(iso3_list)
@@ -58,7 +59,7 @@ def main() -> None:
                     and meta_dict.get("all", {}).get("date_established")
                     and meta_dict.get("all", {}).get("date_reviewed")
                 ):
-                    dataset = generate_dataset(meta_dict, iso3)
+                    dataset = generate_dataset(meta_dict, iso3, today)
                     if not dataset:
                         continue
                     dataset.update_from_yaml(
