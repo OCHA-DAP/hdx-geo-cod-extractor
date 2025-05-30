@@ -125,7 +125,7 @@ def compile_notes(
         requires_update = "The COD-AB requires improvements."
     ps_dataset = "There is no suitable population statistics dataset (COD-PS) for linkage to this COD-AB."
     if metadata["all"].get("cod_ps_available"):
-        ps_dataset = f"This COD-AB is suitable for database or GIS linkage to the {country_name} population statistics ([COD-PS](https://data.humdata.org/dataset/cod-ps-{iso3.lower()}) dataset."
+        ps_dataset = f"This COD-AB is suitable for database or GIS linkage to the {country_name} population statistics ([COD-PS](https://data.humdata.org/dataset/cod-ps-{iso3.lower()})) dataset."
     em_dataset = (
         "No edge-matched (COD-EM) version of this COD-AB has yet been prepared."
     )
