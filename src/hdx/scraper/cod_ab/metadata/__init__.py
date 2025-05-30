@@ -1,12 +1,12 @@
 import json
+from pathlib import Path
 
 from pandas import DataFrame
 
-from hdx.scraper.cod_ab.config import data_dir
 from hdx.scraper.cod_ab.metadata.utils import get_meta, process_dict, process_long
 
 
-def main(iso3: str) -> dict:
+def main(iso3: str, data_dir: Path) -> dict:
     """Downloads metadata from google sheet."""
     meta_list = get_meta(iso3)
     meta_long = process_long(meta_list)

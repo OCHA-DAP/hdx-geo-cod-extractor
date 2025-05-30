@@ -6,6 +6,7 @@ Calls other functions that generate datasets that this script then creates in HD
 
 import logging
 from os.path import dirname, expanduser, join
+from pathlib import Path
 from shutil import rmtree
 
 from hdx.data.user import User
@@ -16,7 +17,7 @@ from tqdm import tqdm
 
 from hdx.scraper.cod_ab import checks, download, formats, metadata, scores
 from hdx.scraper.cod_ab.cod_ab import generate_dataset
-from hdx.scraper.cod_ab.config import DEBUG, data_dir
+from hdx.scraper.cod_ab.config import DEBUG
 from hdx.scraper.cod_ab.utils import (
     get_arcgis_update,
     get_hdx_update,
@@ -26,18 +27,32 @@ from hdx.scraper.cod_ab.utils import (
 logger = logging.getLogger(__name__)
 
 _USER_AGENT_LOOKUP = "hdx-scraper-cod-ab"
+_SAVED_DATA_DIR = "saved_data"  # Keep in repo to avoid deletion in /tmp
 _UPDATED_BY_SCRIPT = "HDX Scraper: COD-AB"
 PASS = 1.0
 
 
-def main() -> None:
-    """Generate datasets and create them in HDX."""
+def main(save: bool = True) -> None:
+    """Generate datasets and create them in HDX.
+    Args:
+        save (bool): Save downloaded data. Defaults to True.
+
+    Returns:
+        None
+    """
     if not User.check_current_user_organization_access("ocha-fiss", "create_dataset"):
         raise PermissionError(
             "API Token does not give access to OCHA FISS organisation!",
         )
     today = now_utc()
     with wheretostart_tempdir_batch(folder=_USER_AGENT_LOOKUP) as info:
+        # set up folder to store data
+        if save:
+            data_dir = Path(_SAVED_DATA_DIR)
+            data_dir.mkdir(exist_ok=True, parents=True)
+        else:
+            data_dir = Path(info["folder"])
+
         iso3_list = get_iso3_list()
         pbar = tqdm(iso3_list)
         for iso3 in pbar:
@@ -47,19 +62,19 @@ def main() -> None:
             hdx_update = get_hdx_update(iso3)
             if arcgis_update >= hdx_update:
                 iso3_dir.mkdir(exist_ok=True, parents=True)
-                meta_dict = metadata.main(iso3)
+                meta_dict = metadata.main(iso3, data_dir)
                 if DEBUG and not iso3_dir.exists():
-                    download.main(iso3)
-                    formats.main(iso3)
-                    checks.main(iso3)
-                score = scores.main(iso3)
+                    download.main(iso3, data_dir)
+                    formats.main(iso3, data_dir)
+                    checks.main(iso3, data_dir)
+                score = scores.main(iso3, data_dir)
                 if (
                     score == PASS
                     and meta_dict
                     and meta_dict.get("all", {}).get("date_established")
                     and meta_dict.get("all", {}).get("date_reviewed")
                 ):
-                    dataset = generate_dataset(meta_dict, iso3, today)
+                    dataset = generate_dataset(meta_dict, iso3, data_dir, today)
                     if not dataset:
                         continue
                     dataset.update_from_yaml(

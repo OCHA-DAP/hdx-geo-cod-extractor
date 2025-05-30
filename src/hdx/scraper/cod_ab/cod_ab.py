@@ -3,6 +3,7 @@
 
 import logging
 from datetime import datetime
+from pathlib import Path
 
 from hdx.data.dataset import Dataset
 from hdx.data.organization import Organization
@@ -11,12 +12,12 @@ from hdx.location.country import Country
 from hdx.utilities.dateparse import parse_date
 from pandas import read_excel
 
-from hdx.scraper.cod_ab.config import data_dir
-
 logger = logging.getLogger(__name__)
 
 
-def generate_dataset(metadata: dict, iso3: str, today: datetime) -> Dataset | None:
+def generate_dataset(
+    metadata: dict, iso3: str, data_dir: Path, today: datetime
+) -> Dataset | None:
     country_name = Country.get_country_name_from_iso3(iso3)
     if not country_name:
         logger.error(f"Country not found for {iso3}")

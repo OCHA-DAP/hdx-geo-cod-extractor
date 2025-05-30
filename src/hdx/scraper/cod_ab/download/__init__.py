@@ -1,8 +1,10 @@
+from pathlib import Path
+
 from . import metadata, ogr2ogr, points, postprocess
-from hdx.scraper.cod_ab.config import data_dir, services_url
+from hdx.scraper.cod_ab.config import services_url
 
 
-def download_polygons(iso3: str) -> None:
+def download_polygons(iso3: str, data_dir: Path) -> None:
     """Download polygons from ArcGIS server."""
     points_path = data_dir / iso3.lower() / f"{iso3.lower()}_adminpoints.parquet"
     points_path.unlink(missing_ok=True)
@@ -15,7 +17,7 @@ def download_polygons(iso3: str) -> None:
         points.to_points(file_path)
 
 
-def download_lines(iso3: str) -> None:
+def download_lines(iso3: str, data_dir: Path) -> None:
     """Download lines from ArcGIS server."""
     indexes = metadata.lines(iso3)
     for index in indexes:
@@ -25,7 +27,7 @@ def download_lines(iso3: str) -> None:
         postprocess.to_parquet(file_path)
 
 
-def download_points(iso3: str) -> None:
+def download_points(iso3: str, data_dir: Path) -> None:
     """Download points from ArcGIS server."""
     indexes = metadata.points(iso3)
     for index in indexes:
@@ -35,8 +37,8 @@ def download_points(iso3: str) -> None:
         postprocess.to_parquet(file_path)
 
 
-def main(iso3: str) -> None:
+def main(iso3: str, data_dir: Path) -> None:
     """Entrypoint for the module."""
-    download_polygons(iso3)
-    download_lines(iso3)
-    download_points(iso3)
+    download_polygons(iso3, data_dir)
+    download_lines(iso3, data_dir)
+    download_points(iso3, data_dir)

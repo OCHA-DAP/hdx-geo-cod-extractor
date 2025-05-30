@@ -1,6 +1,5 @@
 import logging
 from os import environ, getenv
-from pathlib import Path
 
 from dotenv import load_dotenv
 
@@ -43,10 +42,6 @@ VALID_ON = "valid_on"
 VALID_TO = "valid_to"
 
 services_url = f"{ARCGIS_SERVER}/server/rest/services/Hosted"
-
-cwd = Path(__file__).parent
-data_dir = cwd / "../../../../saved_data"
-data_dir.mkdir(exist_ok=True, parents=True)
 
 checks_config = {
     "max_level": {
