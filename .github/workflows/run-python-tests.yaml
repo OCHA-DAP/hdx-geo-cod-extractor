@@ -28,6 +28,10 @@ jobs:
       - name: Install Hatch
         uses: pypa/hatch@install
       - name: Test with hatch/pytest
+        env:
+          ARCGIS_SERVER: ${{ secrets.ARCGIS_SERVER }}
+          COD_META_WORKBOOK: ${{ secrets.COD_META_WORKBOOK }}
+          COD_META_SHEET: ${{ secrets.COD_META_SHEET }}
         run: |
           hatch test
       - name: Check styling
