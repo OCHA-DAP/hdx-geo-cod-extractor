@@ -149,7 +149,7 @@ def compile_notes(
     lines = (
         lines
         + features_info
-        + [f"This metadata was last updated on {today.strftime('%B %d, %Y')}."]
+        + [f"This metadata was last updated on {today.strftime('%B %-d, %Y')}."]
     )
     notes = "  \n  \n".join(lines)
     return notes
