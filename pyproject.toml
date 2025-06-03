@@ -5,16 +5,15 @@ build-backend = "hatchling.build"
 [project]
 name = "hdx-scraper-cod-ab"
 requires-python = ">=3.13"
-dynamic = ["version"]
 dependencies = [
     "defusedxml",
     "geopandas",
     "hdx-python-api",
+    "hdx-python-country",
     "hdx-python-utilities",
     "httpx[http2]",
     "langcodes",
     "pyarrow",
-    "pycountry",
     "pyicu",
     "python-dotenv",
     "quantulum3[classifier]",
@@ -22,8 +21,10 @@ dependencies = [
     "tqdm",
 ]
 
+dynamic = ["version"]
+
 [project.optional-dependencies]
-dev = ["pre-commit", "pytest-cov", "pytest", "ruff", "taskipy"]
+test = ["pre-commit", "pytest-cov", "pytest", "ruff", "taskipy"]
 
 [dependency-groups]
 dev = ["pre-commit", "pytest-cov", "pytest", "ruff", "taskipy"]

@@ -71,7 +71,9 @@ h2==4.2.0
 hdx-python-api==6.3.9
     # via hdx-scraper-cod-ab
 hdx-python-country==3.9.4
-    # via hdx-python-api
+    # via
+    #   hdx-python-api
+    #   hdx-scraper-cod-ab
 hdx-python-utilities==3.8.7
     # via
     #   hdx-python-api
@@ -183,8 +185,6 @@ pre-commit==4.2.0
 psutil==6.1.1
     # via taskipy
 pyarrow==20.0.0
-    # via hdx-scraper-cod-ab
-pycountry==24.6.1
     # via hdx-scraper-cod-ab
 pydantic==2.11.4
     # via frictionless

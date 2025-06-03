@@ -21,13 +21,19 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: "3.13"
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
       - name: Install Hatch
         uses: pypa/hatch@install
       - name: Test with hatch/pytest
+        env:
+          ARCGIS_SERVER: ${{ secrets.ARCGIS_SERVER }}
+          ARCGIS_USERNAME: ${{ secrets.ARCGIS_USERNAME }}
+          ARCGIS_PASSWORD: ${{ secrets.ARCGIS_PASSWORD }}
+          COD_META_WORKBOOK: ${{ secrets.COD_META_WORKBOOK }}
+          COD_META_SHEET: ${{ secrets.COD_META_SHEET }}
         run: |
           hatch test
       - name: Check styling
