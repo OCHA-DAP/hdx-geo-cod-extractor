@@ -80,12 +80,13 @@ def generate_dataset(
         )
         if format_type == "XLSX":
             resource_desc = resource_desc.replace("XLSX", "gazetteer")
-        resource = Resource(
-            {
-                "name": resource_name,
-                "description": resource_desc,
-            }
-        )
+        resource_data = {
+            "name": resource_name,
+            "description": resource_desc,
+        }
+        if admin_level > 0:
+            resource_data["p_coded"] = True
+        resource = Resource(resource_data)
         resource.set_file_to_upload(data_dir / iso3.lower() / resource_name)
         resource.set_format(format_type)
         dataset.add_update_resource(resource)

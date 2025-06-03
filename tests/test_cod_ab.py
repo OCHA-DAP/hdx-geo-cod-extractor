@@ -137,6 +137,7 @@ class TestCODAB:
                     {
                         "name": "caf_cod_ab.xlsx",
                         "description": "Central African Republic administrative level 0-4 gazetteer",
+                        "p_coded": True,
                         "format": "xlsx",
                         "resource_type": "file.upload",
                         "url_type": "upload",
@@ -144,6 +145,7 @@ class TestCODAB:
                     {
                         "name": "caf_cod_ab.shp.zip",
                         "description": "Central African Republic administrative level 0-4 zipped shapefile",
+                        "p_coded": True,
                         "format": "shp",
                         "resource_type": "file.upload",
                         "url_type": "upload",
@@ -151,6 +153,7 @@ class TestCODAB:
                     {
                         "name": "caf_cod_ab.geojson.zip",
                         "description": "Central African Republic administrative level 0-4 GeoJSON",
+                        "p_coded": True,
                         "format": "geojson",
                         "resource_type": "file.upload",
                         "url_type": "upload",
@@ -158,6 +161,7 @@ class TestCODAB:
                     {
                         "name": "caf_cod_ab.gdb.zip",
                         "description": "Central African Republic administrative level 0-4 Geodatabase",
+                        "p_coded": True,
                         "format": "geodatabase",
                         "resource_type": "file.upload",
                         "url_type": "upload",
