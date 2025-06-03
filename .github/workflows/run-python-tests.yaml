@@ -30,6 +30,8 @@ jobs:
       - name: Test with hatch/pytest
         env:
           ARCGIS_SERVER: ${{ secrets.ARCGIS_SERVER }}
+          ARCGIS_USERNAME: ${{ secrets.ARCGIS_USERNAME }}
+          ARCGIS_PASSWORD: ${{ secrets.ARCGIS_PASSWORD }}
           COD_META_WORKBOOK: ${{ secrets.COD_META_WORKBOOK }}
           COD_META_SHEET: ${{ secrets.COD_META_SHEET }}
         run: |
