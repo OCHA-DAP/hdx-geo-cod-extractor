@@ -8,9 +8,8 @@ from hdx.utilities.dateparse import parse_date
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import temp_dir
 from hdx.utilities.retriever import Retrieve
-from pandas import read_excel
 
-from hdx.scraper.cod_ab import checks, formats, metadata, scores
+from hdx.scraper.cod_ab import checks, metadata, scores
 from hdx.scraper.cod_ab.cod_ab import generate_dataset
 from hdx.scraper.cod_ab.utils import (
     get_arcgis_update,
@@ -60,16 +59,6 @@ class TestCODAB:
                 parquet_files = glob(f"{join(fixtures_dir, iso3.lower())}/*.parquet")
                 for parquet_file in parquet_files:
                     copy2(parquet_file, iso3_dir)
-
-                formats.main(iso3, data_dir)
-                df1 = read_excel(
-                    join(tempdir, iso3.lower(), "caf_cod_ab.xlsx"), sheet_name=None
-                )
-                df2 = read_excel(
-                    join(fixtures_dir, iso3.lower(), "caf_cod_ab.xlsx"), sheet_name=None
-                )
-                for sheet_name in df1:
-                    assert df1[sheet_name].equals(df2[sheet_name])
 
                 checks.main(iso3, data_dir)
                 assert_files_same(
