@@ -1,12 +1,16 @@
+from glob import glob
 from os.path import join
 from pathlib import Path
+from shutil import copy2
 
+from hdx.utilities.compare import assert_files_same
 from hdx.utilities.dateparse import parse_date
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import temp_dir
 from hdx.utilities.retriever import Retrieve
+from pandas import read_excel
 
-from hdx.scraper.cod_ab import metadata
+from hdx.scraper.cod_ab import checks, formats, metadata, scores
 from hdx.scraper.cod_ab.cod_ab import generate_dataset
 from hdx.scraper.cod_ab.utils import (
     get_arcgis_update,
@@ -52,12 +56,33 @@ class TestCODAB:
                 hdx_update = get_hdx_update(iso3)
                 assert hdx_update == "2023-04-04"
 
-                # TODO: add some assertions here
-                # download.main(iso3, retriever, data_dir)
-                # formats.main(iso3, data_dir)
-                # checks.main(iso3, data_dir)
-                # score = scores.main(iso3, data_dir)
-                # assert score == 1.0
+                # Copy files to temp dir, skipping download step
+                parquet_files = glob(f"{join(fixtures_dir, iso3.lower())}/*.parquet")
+                for parquet_file in parquet_files:
+                    copy2(parquet_file, iso3_dir)
+
+                formats.main(iso3, data_dir)
+                df1 = read_excel(
+                    join(tempdir, iso3.lower(), "caf_cod_ab.xlsx"), sheet_name=None
+                )
+                df2 = read_excel(
+                    join(fixtures_dir, iso3.lower(), "caf_cod_ab.xlsx"), sheet_name=None
+                )
+                for sheet_name in df1:
+                    assert df1[sheet_name].equals(df2[sheet_name])
+
+                checks.main(iso3, data_dir)
+                assert_files_same(
+                    join(tempdir, iso3.lower(), "caf_checks.csv"),
+                    join(fixtures_dir, iso3.lower(), "caf_checks.csv"),
+                )
+
+                score = scores.main(iso3, data_dir)
+                assert_files_same(
+                    join(tempdir, iso3.lower(), "caf_scores.csv"),
+                    join(fixtures_dir, iso3.lower(), "caf_scores.csv"),
+                )
+                assert score == 1.0
 
                 meta_dict = metadata.main(iso3, retriever, data_dir)
                 assert meta_dict == {
