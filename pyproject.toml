@@ -7,6 +7,7 @@ name = "hdx-scraper-cod-ab"
 requires-python = ">=3.13"
 dependencies = [
     "defusedxml",
+    "gdal",
     "geopandas",
     "hdx-python-api",
     "hdx-python-country",

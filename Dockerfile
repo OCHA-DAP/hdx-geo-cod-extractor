@@ -6,7 +6,7 @@ COPY requirements.txt ./
 
 RUN apk add --no-cache \
     gdal-driver-parquet \
-    gdal-tools \
+    gdal-tools && \
     apk add --no-cache --virtual .build-deps \
     apache-arrow-dev \
     build-base \

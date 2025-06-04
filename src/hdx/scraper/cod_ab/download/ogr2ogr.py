@@ -1,9 +1,8 @@
-import re
 from logging import getLogger
 from pathlib import Path
-from subprocess import DEVNULL, CompletedProcess, run
 from urllib.parse import urlencode
 
+from osgeo import gdal
 from tenacity import retry, stop_after_attempt, wait_fixed
 
 from hdx.scraper.cod_ab.config import ATTEMPT, WAIT
@@ -16,7 +15,7 @@ LINE = 2
 POLYGON = 3
 
 
-def ogr2ogr(url: str, file_path: Path, records: int | None) -> CompletedProcess[bytes]:
+def ogr2ogr(url: str, file_path: Path, records: int | None):
     """Uses OGR2OGR to download ESRI JSON from an ArcGIS server to local FlatGeobuf.
 
     The query parameter "f" (format) is set to return JSON (default is HTML), "where" is
@@ -54,16 +53,15 @@ def ogr2ogr(url: str, file_path: Path, records: int | None) -> CompletedProcess[
         query["resultRecordCount"] = records
     dst_dataset = file_path.with_suffix(".fgb")
     src_dataset = f"{url}/query?{urlencode(query)}"
-    return run(
-        [
-            "ogr2ogr",
-            "-overwrite",
-            *["-nln", file_path.stem],
-            *["-oo", "FEATURE_SERVER_PAGING=YES"],
-            *[dst_dataset, src_dataset],
-        ],
-        stderr=DEVNULL,
-        check=False,
+    gdal.Run(
+        ["vector", "convert"],
+        {
+            "input": src_dataset,
+            "output": dst_dataset,
+            "overwrite": True,
+            "open-option": "FEATURE_SERVER_PAGING=YES",
+            "output-layer": file_path.stem,
+        },
     )
 
 
@@ -81,17 +79,16 @@ def is_correct_geom_type(file_path: Path, geom_type: int) -> bool:
         True if the file is detected as a valid polygon, otherwise false.
     """
     if geom_type == POINT:
-        regex = re.compile(r"\((Multi Point|Point)\)")
+        type_string = "Point"
     elif geom_type == LINE:
-        regex = re.compile(r"\((Multi Line String|Line String)\)")
+        type_string = "Line String"
     elif geom_type == POLYGON:
-        regex = re.compile(r"\((Multi Polygon|Polygon)\)")
-    result = run(
-        ["ogrinfo", file_path.with_suffix(".fgb")],
-        capture_output=True,
-        check=False,
-    )
-    return bool(regex.search(result.stdout.decode("utf-8")))
+        type_string = "Polygon"
+    result = gdal.Run(
+        ["vector", "info"],
+        {"input": file_path.with_suffix(".fgb")},
+    ).Output()
+    return type_string in result["layers"][0]["geometryFields"][0]["type"]
 
 
 @retry(stop=stop_after_attempt(ATTEMPT), wait=wait_fixed(WAIT))
@@ -122,8 +119,10 @@ def main(file_path: Path, url: str, geom_type: int) -> None:
         downloaded.
     """
     for records in [None, 1000, 100, 10, 1]:
-        result = ogr2ogr(url, file_path, records)
-        if result.returncode == 0:
+        try:
+            ogr2ogr(url, file_path, records)
             break
+        except Exception:
+            continue
     if not is_correct_geom_type(file_path, geom_type):
         raise RuntimeError(file_path)

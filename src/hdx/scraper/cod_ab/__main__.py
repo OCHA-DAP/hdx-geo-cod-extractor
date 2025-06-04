@@ -68,6 +68,8 @@ def main(
             pbar = tqdm(iso3_list)
             for iso3 in pbar:
                 pbar.set_postfix_str(iso3)
+                if iso3 != "BFA":
+                    continue
                 iso3_dir = data_dir / iso3.lower()
                 arcgis_update = get_arcgis_update(iso3, retriever)
                 hdx_update = get_hdx_update(iso3)

@@ -1,37 +1,31 @@
 from pathlib import Path
 from shutil import rmtree
-from subprocess import run
+
+from osgeo import gdal
 
 
 def to_multilayer(src_dataset: Path, dst_dataset: Path, *, multi: bool) -> None:
     """Uses OGR2OGR to turn a GeoParquet into a generic layer."""
     if dst_dataset.suffixes[0] == ".shp":
-        lco = ["-lco", "ENCODING=UTF-8"]
+        lco = {"ENCODING": "UTF-8"}
     elif dst_dataset.suffix == ".gdb":
-        lco = [
-            "-lco",
-            "TARGET_ARCGIS_VERSION=ARCGIS_PRO_3_2_OR_LATER",
-            "-f",
-            "OpenFileGDB",
-        ]
+        lco = {"TARGET_ARCGIS_VERSION": "ARCGIS_PRO_3_2_OR_LATER"}
     else:
-        lco = []
+        lco = {}
     if multi:
-        output_options = ["-nln", src_dataset.stem]
+        output_options = {"output_layer": src_dataset.stem}
     else:
         dst_dataset.mkdir(exist_ok=True, parents=True)
         dst_dataset = (dst_dataset / src_dataset.stem).with_suffix(dst_dataset.suffix)
-        output_options = []
-    run(
-        [
-            "ogr2ogr",
-            "-overwrite",
-            *lco,
-            *output_options,
-            dst_dataset,
-            src_dataset,
-        ],
-        check=False,
+        output_options = {}
+    gdal.Run(
+        "vector",
+        "convert",
+        input=src_dataset,
+        output=dst_dataset,
+        overwrite=True,
+        creation_options=lco,
+        **output_options,
     )
 
 
@@ -53,15 +47,13 @@ def main(iso3: str, data_dir: Path) -> None:
         if dst_dataset.is_dir():
             zip_file = dst_dataset.with_suffix(dst_dataset.suffix + ".zip")
             zip_file.unlink(missing_ok=True)
-            run(
-                [
-                    "sozip",
-                    "--quiet",
-                    "--recurse-paths",
-                    "--junk-paths",
-                    zip_file,
-                    dst_dataset,
-                ],
-                check=False,
+            gdal.Run(
+                "vsi",
+                "sozip",
+                "create",
+                "--recursive",
+                "--no-paths",
+                input=zip_file,
+                output=dst_dataset,
             )
             rmtree(dst_dataset, ignore_errors=True)

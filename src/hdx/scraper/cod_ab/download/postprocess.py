@@ -14,7 +14,7 @@ def add_iso_codes(gdf: GeoDataFrame, file_path: Path) -> GeoDataFrame:
 
 
 def to_parquet(file_path: Path) -> None:
-    """Uses OGR2OGR to turn a FlatGeobuf into GeoParquet.
+    """Uses GeoPandas to turn a FlatGeobuf into GeoParquet.
 
     Args:
         file_path: Name of the downloaded layer.
