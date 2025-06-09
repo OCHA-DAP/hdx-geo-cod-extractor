@@ -9,8 +9,6 @@ from os.path import dirname, expanduser, join
 from pathlib import Path
 from shutil import rmtree
 
-from hdx.api.configuration import Configuration
-from hdx.data.user import User
 from hdx.facades.infer_arguments import facade
 from hdx.utilities.dateparse import now_utc
 from hdx.utilities.downloader import Download
@@ -46,8 +44,6 @@ def main(
     Returns:
         None
     """
-    Configuration.read()
-    User.check_current_user_write_access("ocha-fiss")
 
     today = now_utc()
     with wheretostart_tempdir_batch(folder=_USER_AGENT_LOOKUP) as info:
