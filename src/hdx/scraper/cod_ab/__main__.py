@@ -9,6 +9,7 @@ from os.path import dirname, expanduser, join
 from pathlib import Path
 from shutil import rmtree
 
+from hdx.api.configuration import Configuration
 from hdx.data.user import User
 from hdx.facades.infer_arguments import facade
 from hdx.utilities.dateparse import now_utc
@@ -45,10 +46,9 @@ def main(
     Returns:
         None
     """
-    if not User.check_current_user_organization_access("ocha-fiss", "create_dataset"):
-        raise PermissionError(
-            "API Token does not give access to OCHA FISS organisation!",
-        )
+    Configuration.read()
+    User.check_current_user_write_access("ocha-fiss")
+
     today = now_utc()
     with wheretostart_tempdir_batch(folder=_USER_AGENT_LOOKUP) as info:
         temp_dir = info["folder"]
