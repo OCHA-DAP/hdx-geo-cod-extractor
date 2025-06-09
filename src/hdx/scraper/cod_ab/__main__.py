@@ -31,7 +31,6 @@ logger = logging.getLogger(__name__)
 _USER_AGENT_LOOKUP = "hdx-scraper-cod-ab"
 _SAVED_DATA_DIR = "saved_data"  # Keep in repo to avoid deletion in /tmp
 _UPDATED_BY_SCRIPT = "HDX Scraper: COD-AB"
-PASS = 1.0
 
 
 def main(
@@ -78,31 +77,23 @@ def main(
                         formats.main(iso3, data_dir)
                         checks.main(iso3, data_dir)
                     score = scores.main(iso3, data_dir)
+                    logger.info(f"{iso3} Score: {score}")
                     meta_dict = metadata.main(iso3, retriever, data_dir)
-                    if (
-                        score == PASS
-                        and meta_dict
-                        and meta_dict.get("all", {}).get("date_established")
-                        and meta_dict.get("all", {}).get("date_reviewed")
-                    ):
-                        dataset = generate_dataset(meta_dict, iso3, data_dir, today)
-                        if not dataset:
-                            continue
-                        dataset.update_from_yaml(
-                            path=join(
-                                dirname(__file__), "config", "hdx_dataset_static.yaml"
-                            ),
-                        )
-                        dataset.create_in_hdx(
-                            remove_additional_resources=True,
-                            match_resource_order=False,
-                            hxl_update=False,
-                            updated_by_script=_UPDATED_BY_SCRIPT,
-                            batch=info["batch"],
-                        )
-                        logger.info("Pass: %s", iso3)
-                    else:
-                        logger.info("Fail: %s", iso3)
+                    dataset = generate_dataset(meta_dict, iso3, data_dir, today)
+                    if not dataset:
+                        continue
+                    dataset.update_from_yaml(
+                        path=join(
+                            dirname(__file__), "config", "hdx_dataset_static.yaml"
+                        ),
+                    )
+                    dataset.create_in_hdx(
+                        remove_additional_resources=True,
+                        match_resource_order=False,
+                        hxl_update=False,
+                        updated_by_script=_UPDATED_BY_SCRIPT,
+                        batch=info["batch"],
+                    )
                     if not DEBUG:
                         rmtree(iso3_dir, ignore_errors=True)
 

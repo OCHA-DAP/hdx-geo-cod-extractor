@@ -31,8 +31,11 @@ def generate_dataset(
         },
     )
 
-    dataset_time_start = metadata["all"]["date_established"]
-    dataset_time_end = metadata["all"]["date_reviewed"]
+    dataset_time_start = metadata["all"].get("date_established")
+    dataset_time_end = metadata["all"].get("date_reviewed")
+    if not dataset_time_start or not dataset_time_end:
+        logger.error(f"Dates not present for {iso3}")
+        return None
     dataset.set_time_period(dataset_time_start, dataset_time_end)
 
     dataset_tags = ["administrative boundaries-divisions", "gazetteer"]
