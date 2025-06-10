@@ -18,6 +18,9 @@ logger = logging.getLogger(__name__)
 def generate_dataset(
     metadata: dict, iso3: str, data_dir: Path, today: datetime
 ) -> Dataset | None:
+    if not metadata.get("all"):
+        logger.error(f"No metadata for {iso3}")
+        return None
     country_name = Country.get_country_name_from_iso3(iso3)
     if not country_name:
         logger.error(f"Country not found for {iso3}")
