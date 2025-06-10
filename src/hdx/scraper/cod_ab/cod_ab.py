@@ -55,9 +55,16 @@ def generate_dataset(
 
     dataset["dataset_source"] = metadata["all"]["source"]
     dataset["caveats"] = ""  # TODO: fill in caveats if needed
+
     feature_counts = get_feature_counts(
         data_dir / iso3.lower() / f"{iso3.lower()}_cod_ab.xlsx"
     )
+    admin_level = metadata["all"]["level_deepest"]
+    expected_keys = [f"adm{level}" for level in range(0, admin_level + 1)]
+    if sorted(list(feature_counts.keys())) != expected_keys:
+        logger.error(f"Not all admin levels found for {iso3}")
+        return None
+
     dataset["notes"] = compile_notes(
         iso3, country_name, metadata, feature_counts, today
     )
@@ -69,7 +76,6 @@ def generate_dataset(
     dataset["cod_level"] = cod_level
 
     # Add resources
-    admin_level = metadata["all"]["level_deepest"]
     if admin_level == 0:
         admin_level_range = "0"
     else:
