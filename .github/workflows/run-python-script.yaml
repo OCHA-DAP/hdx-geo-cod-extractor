@@ -22,7 +22,6 @@ jobs:
           sudo apt install -y -V ./apache-arrow-apt-source-latest-$(lsb_release --codename --short).deb
           sudo apt update
           sudo apt install gdal-bin
-          sudo apt install libdgal-dev
           sudo apt install -y -V libarrow-dev
           sudo apt install -y -V libarrow-glib-dev
           sudo apt install -y -V libarrow-dataset-dev
