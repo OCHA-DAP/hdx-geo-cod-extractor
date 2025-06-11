@@ -38,19 +38,19 @@ jobs:
           COD_META_SHEET: ${{ secrets.COD_META_SHEET }}
         run: |
           python -m hdx.scraper.cod_ab
-      - name: Send mail
-        if: failure()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: ${{secrets.HDX_PIPELINE_EMAIL_SERVER}}
-          server_port: ${{secrets.HDX_PIPELINE_EMAIL_PORT}}
-          username: ${{secrets.HDX_PIPELINE_EMAIL_USERNAME}}
-          password: ${{secrets.HDX_PIPELINE_EMAIL_PASSWORD}}
-          subject: "FAILED: ${{github.repository}} run job"
-          body: GitHub Actions run job for ${{github.repository}} failed!
-          to: ${{vars.HDX_PIPELINE_EMAIL_LIST}}
-          from: ${{secrets.HDX_PIPELINE_EMAIL_FROM}}
-          content_type: text/html
+#      - name: Send mail
+#        if: failure()
+#        uses: dawidd6/action-send-mail@v3
+#        with:
+#          server_address: ${{secrets.HDX_PIPELINE_EMAIL_SERVER}}
+#          server_port: ${{secrets.HDX_PIPELINE_EMAIL_PORT}}
+#          username: ${{secrets.HDX_PIPELINE_EMAIL_USERNAME}}
+#          password: ${{secrets.HDX_PIPELINE_EMAIL_PASSWORD}}
+#          subject: "FAILED: ${{github.repository}} run job"
+#          body: GitHub Actions run job for ${{github.repository}} failed!
+#          to: ${{vars.HDX_PIPELINE_EMAIL_LIST}}
+#          from: ${{secrets.HDX_PIPELINE_EMAIL_FROM}}
+#          content_type: text/html
   workflow-keepalive:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
