@@ -3,9 +3,7 @@ from pathlib import Path
 from typing import Literal
 
 import pandas as pd
-from defusedxml.ElementTree import fromstring
 from geopandas import GeoDataFrame
-from hdx.data.dataset import Dataset
 from hdx.utilities.retriever import Retrieve
 from httpx import Client
 from pandas import DataFrame, to_datetime
@@ -67,26 +65,6 @@ def get_iso3_list(retriever: Retrieve) -> list[str]:
         for x in services
         if x["type"] == "FeatureServer" and p.search(x["name"])
     ]
-
-
-def get_hdx_update(iso3: str) -> str:
-    """Get the date an HDX dataset was last updated."""
-    dataset = Dataset.read_from_hdx(f"cod-ab-{iso3.lower()}")
-    return dataset["last_modified"][:10]
-
-
-def get_arcgis_update(iso3: str, retriever: Retrieve) -> str:
-    """Get the date an ArcGIS Server service was last updated."""
-    text = retriever.download_text(
-        url=f"{services_url}/cod_{iso3.lower()}_ab_standardized/FeatureServer/info/metadata",
-        parameters={"token": generate_token()},
-        filename=f"{iso3.lower()}_ab_standardized.txt",
-    )
-    root = fromstring(text)
-    date = root.findtext("Esri/CreaDate")
-    if date:
-        return f"{date[:4]}-{date[4:6]}-{date[6:8]}"
-    return ""
 
 
 def is_empty(string: str) -> bool:

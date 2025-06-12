@@ -11,11 +11,7 @@ from hdx.utilities.retriever import Retrieve
 
 from hdx.scraper.cod_ab import checks, metadata, scores
 from hdx.scraper.cod_ab.cod_ab import generate_dataset
-from hdx.scraper.cod_ab.utils import (
-    get_arcgis_update,
-    get_hdx_update,
-    get_iso3_list,
-)
+from hdx.scraper.cod_ab.utils import get_iso3_list
 
 
 class TestCODAB:
@@ -49,11 +45,6 @@ class TestCODAB:
                 iso3 = "CAF"
                 iso3_dir = data_dir / iso3.lower()
                 iso3_dir.mkdir(exist_ok=True, parents=True)
-                arcgis_update = get_arcgis_update(iso3, retriever)
-                assert arcgis_update == "2025-05-07"
-
-                hdx_update = get_hdx_update(iso3)
-                assert hdx_update == "2023-04-04"
 
                 # Copy files to temp dir, skipping download step
                 parquet_files = glob(f"{join(fixtures_dir, iso3.lower())}/*.parquet")
