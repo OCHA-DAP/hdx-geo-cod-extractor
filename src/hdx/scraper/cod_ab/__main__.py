@@ -19,11 +19,7 @@ from tqdm import tqdm
 from hdx.scraper.cod_ab import checks, download, formats, metadata, scores
 from hdx.scraper.cod_ab.cod_ab import generate_dataset
 from hdx.scraper.cod_ab.config import DEBUG
-from hdx.scraper.cod_ab.utils import (
-    get_arcgis_update,
-    get_hdx_update,
-    get_iso3_list,
-)
+from hdx.scraper.cod_ab.utils import get_iso3_list
 
 logger = logging.getLogger(__name__)
 
@@ -64,34 +60,29 @@ def main(
             for iso3 in pbar:
                 pbar.set_postfix_str(iso3)
                 iso3_dir = data_dir / iso3.lower()
-                arcgis_update = get_arcgis_update(iso3, retriever)
-                hdx_update = get_hdx_update(iso3)
-                if arcgis_update >= hdx_update:
-                    if not DEBUG or (DEBUG and not iso3_dir.exists()):
-                        iso3_dir.mkdir(exist_ok=True, parents=True)
-                        download.main(iso3, retriever, data_dir)
-                        formats.main(iso3, data_dir)
-                        checks.main(iso3, data_dir)
-                    score = scores.main(iso3, data_dir)
-                    logger.info(f"{iso3} Score: {score}")
-                    meta_dict = metadata.main(iso3, retriever, data_dir)
-                    dataset = generate_dataset(meta_dict, iso3, data_dir, today)
-                    if not dataset:
-                        continue
-                    dataset.update_from_yaml(
-                        path=join(
-                            dirname(__file__), "config", "hdx_dataset_static.yaml"
-                        ),
-                    )
-                    dataset.create_in_hdx(
-                        remove_additional_resources=True,
-                        match_resource_order=False,
-                        hxl_update=False,
-                        updated_by_script=_UPDATED_BY_SCRIPT,
-                        batch=info["batch"],
-                    )
-                    if not DEBUG:
-                        rmtree(iso3_dir, ignore_errors=True)
+                if not DEBUG or (DEBUG and not iso3_dir.exists()):
+                    iso3_dir.mkdir(exist_ok=True, parents=True)
+                    download.main(iso3, retriever, data_dir)
+                    formats.main(iso3, data_dir)
+                    checks.main(iso3, data_dir)
+                score = scores.main(iso3, data_dir)
+                logger.info(f"{iso3} Score: {score}")
+                meta_dict = metadata.main(iso3, retriever, data_dir)
+                dataset = generate_dataset(meta_dict, iso3, data_dir, today)
+                if not dataset:
+                    continue
+                dataset.update_from_yaml(
+                    path=join(dirname(__file__), "config", "hdx_dataset_static.yaml"),
+                )
+                dataset.create_in_hdx(
+                    remove_additional_resources=True,
+                    match_resource_order=False,
+                    hxl_update=False,
+                    updated_by_script=_UPDATED_BY_SCRIPT,
+                    batch=info["batch"],
+                )
+                if not DEBUG:
+                    rmtree(iso3_dir, ignore_errors=True)
 
 
 if __name__ == "__main__":
