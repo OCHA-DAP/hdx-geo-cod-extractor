@@ -3,5 +3,7 @@ services:
     build: .
     env_file: .env
     volumes:
+      - ~/.hdx_configuration.yaml:/root/.hdx_configuration.yaml
+      - ~/.useragents.yaml:/root/.useragents.yaml
       - ./src:/usr/src/app/src
       - ./saved_data:/usr/src/app/data

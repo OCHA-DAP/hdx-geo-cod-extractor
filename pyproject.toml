@@ -32,6 +32,7 @@ dev = ["pre-commit", "pytest-cov", "pytest", "ruff", "taskipy"]
 [tool.taskipy.tasks]
 # uv run task app
 app = "python -m hdx.scraper.cod_ab"
+test = "pytest --rootdir=. --junitxml=test-results.xml --cov --no-cov-on-fail --cov-report=lcov --cov-report=term-missing"
 export = "uv sync -q && uv export -q --no-emit-project --no-hashes --no-dev -o requirements.txt"
 export_test = "uv sync -q && uv export -q --no-emit-project --no-hashes -o requirements-test.txt"
 ruff = "ruff format && ruff check && ruff format"
